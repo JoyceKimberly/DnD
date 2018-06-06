@@ -75,8 +75,7 @@
 
         // repeat across x-axis
         if (x < 0 || x >= tileRange) {
-          //x = (x % tileRange + tileRange) % tileRange;
-          return null;
+          x = (x % tileRange + tileRange) % tileRange;
         }
 
         return {x: x, y: y};
