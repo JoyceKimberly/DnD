@@ -33,14 +33,14 @@
 
         var DnDMapType = new google.maps.ImageMapType({
           getTileUrl: function(coord, zoom) {
-              var normalizedCoord = getNormalizedCoord(coord, zoom);
+              /*var normalizedCoord = getNormalizedCoord(coord, zoom);
               if (!normalizedCoord) {
                 return null;
               }
               var bound = Math.pow(2, zoom);
               return 'https://joycekimberly.github.io/Map' +
                   '/' + zoom + '/' + normalizedCoord.x + '/' +
-                  (bound - normalizedCoord.y - 1) + '.jpg';
+                  (bound - normalizedCoord.y - 1) + '.jpg';*/
             var url = TILE_URL
               .replace('{x}', coord.x)
               .replace('{y}', coord.y)
