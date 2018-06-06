@@ -49,6 +49,19 @@
 
         map.mapTypes.set('DnD', DnDMapType);
         map.setMapTypeId('DnD');
+
+        google.maps.event.addListener(map, 'click', function(event) {
+          var latitude = event.latLng.lat();
+          var longitude = event.latLng.lng();
+          console.log( latitude + ', ' + longitude );
+        });
+
+
+        var marker = new google.maps.Marker({
+          position: {lat: 20.36030957722787, lng: -63.801646689467816},
+          map: map,
+          title: 'Abbey'
+        });
       }
 
       // Normalizes the coords that tiles repeat across the x axis (horizontally)
@@ -73,6 +86,7 @@
 
         return {x: x, y: y};
       }
+
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZN7rNbVzB4bwutazKD0iwv5bQ6f59Avs&callback=initMap">
