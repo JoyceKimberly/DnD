@@ -21,7 +21,6 @@
   <body>
     <div id="map"></div>
     <script>
-      var TILE_URL = 'https://joycekimberly.github.io/Map/{z}/{x}/{y}.jpg';
       var map;
       var markers = [];
 
@@ -38,7 +37,7 @@
         var DnDMapType = new google.maps.ImageMapType({
           getTileUrl: function(coord, zoom) {
             var normalizedCoord = getNormalizedCoord(coord, zoom);
-            if(normalizedCoord && (normalizedCoord.x < Math.pow(2, zoom)) && (normalizedCoord.x > -1) && (normalizedCoord.y < Math.pow(2, zoom)) && (normalizedCoord.y > -1)) {
+            if (normalizedCoord && (normalizedCoord.x < Math.pow(2, zoom)) && (normalizedCoord.x > -1) && (normalizedCoord.y < Math.pow(2, zoom)) && (normalizedCoord.y > -1)) {
               return zoom + '/' + normalizedCoord.x + '/' + normalizedCoord.y + '.jpg';
             } else {
               return 'empty.jpg';
