@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-46.58203125, 33.94335994657882]
+      },
+      "properties": {
+        "name": "Vasserbünde"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-41.8359375, 18.729501999072138]
+      },
+      "properties": {
+        "name": "Steinchencröe"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-63.801646689467816, 20.36030957722787]
+      },
+      "properties": {
+        "name": "Abbey"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-48.33984375, 54.622978132690335]
+      },
+      "properties": {
+        "name": "Coorhagen"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [ 
+          [-46.58203125, 33.94335994657882],
+          [-44.82421875, 29.45873118535534], 
+          [-43.98964982845155, 26.390213151413324],
+          [-41.8359375, 18.729501999072138]
+        ]
+      }
+    }
+  ]
+}

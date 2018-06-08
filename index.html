@@ -22,10 +22,7 @@
     <div id="map"></div>
     <script>
       var map;
-      var markers = [];
       var infoWindow;
-      var locationSelect;
-      var searchUrl = 'markers.xml';
 
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
@@ -56,19 +53,21 @@
 
         map.mapTypes.set('DnD', DnDMapType);
         map.setMapTypeId('DnD');
+        map.data.loadGeoJson('data.json');
+        map.data.setStyle({
+          strokeColor: '#FF0000',
+          strokeWeight: 3
+        });
 
-        downloadUrl(searchUrl, function(data) {
-          var xml = parseXml(data);
-          var markerNodes = xml.documentElement.getElementsByTagName("marker");
-          for (var i = 0; i < markerNodes.length; i++) {
-            var id = markerNodes[i].getAttribute("id");
-            var name = markerNodes[i].getAttribute("name");
-            var latlng = new google.maps.LatLng(
-              parseFloat(markerNodes[i].getAttribute("lat")),
-              parseFloat(markerNodes[i].getAttribute("lng"))
-            );
-            createMarker(latlng, name);
-          }
+        map.data.addListener('click', function(event) {
+          if (event.feature.f.name) {
+            infoWindow.setContent(event.feature.f.name);
+          } else {
+            var distance = google.maps.geometry.spherical.computeLength(event.feature.b.getArray());
+            infoWindow.setContent( computeDndDistance(distance) + ' km' );
+          };
+          infoWindow.setPosition(event.latLng);
+          infoWindow.open(map);
         });
 
         google.maps.event.addListener(map, 'click', function(event) {
@@ -76,64 +75,12 @@
           var longitude = event.latLng.lng();
           console.log( latitude + ', ' + longitude );
         });
-
-        var routeCoordinates = [
-          {lat: 33.94335994657882, lng: -46.58203125},
-          {lat: 29.45873118535534, lng: -44.82421875},
-          {lat: 26.390213151413324, lng: -43.98964982845155},
-          {lat: 18.729501999072138, lng: -41.8359375}
-        ];
-        var route34 = new google.maps.Polyline({
-          path: routeCoordinates,
-          geodesic: true,
-          strokeColor: '#FF0000',
-          strokeOpacity: 1.0,
-          strokeWeight: 2
-        });
-        route34.setMap(map);
       } // initMap()
 
-      function createMarker(latlng, name) {
-        var marker = new google.maps.Marker({
-          map: map,
-          position: latlng,
-          title: name
-        });
-        google.maps.event.addListener(marker, 'click', function() {
-          infoWindow.setContent(name);
-          infoWindow.open(map, marker);
-        });
-        markers.push(marker);
+      function computeDndDistance(distance) {
+        return (distance/1758527.001172575)*110;
       }
       
-      function downloadUrl(url, callback) {
-        var request = window.ActiveXObject ?
-          new ActiveXObject('Microsoft.XMLHTTP') :
-          new XMLHttpRequest;
-
-        request.onreadystatechange = function() {
-          if (request.readyState == 4) {
-            request.onreadystatechange = doNothing;
-            callback(request.responseText, request.status);
-          }
-        };
-
-        request.open('GET', url, true);
-        request.send(null);
-      }
-
-      function parseXml(str) {
-        if (window.ActiveXObject) {
-          var doc = new ActiveXObject('Microsoft.XMLDOM');
-          doc.loadXML(str);
-          return doc;
-        } else if (window.DOMParser) {
-          return (new DOMParser).parseFromString(str, 'text/xml');
-        }
-      }
-
-      function doNothing() {}
-
       // Normalizes the coords that tiles repeat across the x axis (horizontally)
       // like the standard Google map tiles.
       function getNormalizedCoord(coord, zoom) {
@@ -158,7 +105,7 @@
       }
     </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZN7rNbVzB4bwutazKD0iwv5bQ6f59Avs&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZN7rNbVzB4bwutazKD0iwv5bQ6f59Avs&libraries=geometry&callback=initMap">
     </script>
   </body>
 </html>
