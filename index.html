@@ -62,7 +62,9 @@
             scale: 10,
             strokeColor: '#FF0000',
             strokeWeight: 3
-          }
+          }/*,
+          draggable: true, 
+          editable: true*/
         });
 
         map.data.addListener('click', function(event) {
@@ -74,6 +76,9 @@
           };
           infoWindow.setPosition(event.latLng);
           infoWindow.open(map);
+          map.data.toGeoJson(function(json) {
+            console.log(JSON.stringify(json, null, 2));
+          });
         });
 
         google.maps.event.addListener(map, 'click', function(event) {
