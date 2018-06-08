@@ -89,7 +89,7 @@
       } // initMap()
 
       function computeDndDistance(distance) {
-        return (distance/1758527.001172575)*110;
+        return (distance/google.maps.geometry.spherical.computeLength(map.data.b.b[Object.keys(map.data.b.b)[0]].b.b))*110;
       }
       
       // Normalizes the coords that tiles repeat across the x axis (horizontally)
