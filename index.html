@@ -64,7 +64,7 @@
             infoWindow.setContent(event.feature.f.name);
           } else {
             var distance = google.maps.geometry.spherical.computeLength(event.feature.b.getArray());
-            infoWindow.setContent( computeDndDistance(distance) + ' km' );
+            infoWindow.setContent( Math.round(computeDndDistance(distance) * 100) / 100 + ' km' );
           };
           infoWindow.setPosition(event.latLng);
           infoWindow.open(map);
@@ -73,7 +73,7 @@
         google.maps.event.addListener(map, 'click', function(event) {
           var latitude = event.latLng.lat();
           var longitude = event.latLng.lng();
-          console.log( latitude + ', ' + longitude );
+          console.log( '[' + longitude + ', ' + latitude + ']' );
         });
       } // initMap()
 
