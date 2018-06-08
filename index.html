@@ -23,6 +23,8 @@
     <script>
       var map;
       var markers = [];
+      var infoWindow;
+      var locationSelect;
       var searchUrl = 'markers.xml';
 
       function initMap() {
@@ -34,6 +36,7 @@
             mapTypeIds: ['DnD']
           }
         });
+        infoWindow = new google.maps.InfoWindow();
 
         var DnDMapType = new google.maps.ImageMapType({
           getTileUrl: function(coord, zoom) {
@@ -57,7 +60,6 @@
         downloadUrl(searchUrl, function(data) {
           var xml = parseXml(data);
           var markerNodes = xml.documentElement.getElementsByTagName("marker");
-          //var bounds = new google.maps.LatLngBounds();
           for (var i = 0; i < markerNodes.length; i++) {
             var id = markerNodes[i].getAttribute("id");
             var name = markerNodes[i].getAttribute("name");
@@ -66,9 +68,7 @@
               parseFloat(markerNodes[i].getAttribute("lng"))
             );
             createMarker(latlng, name);
-            //bounds.extend(latlng);
           }
-          //map.fitBounds(bounds);
         });
 
         google.maps.event.addListener(map, 'click', function(event) {
@@ -76,36 +76,32 @@
           var longitude = event.latLng.lng();
           console.log( latitude + ', ' + longitude );
         });
-      }
 
-      // Normalizes the coords that tiles repeat across the x axis (horizontally)
-      // like the standard Google map tiles.
-      function getNormalizedCoord(coord, zoom) {
-        var y = coord.y;
-        var x = coord.x;
-
-        // tile range in one direction range is dependent on zoom level
-        // 0 = 1 tile, 1 = 2 tiles, 2 = 4 tiles, 3 = 8 tiles, etc
-        var tileRange = 1 << zoom;
-
-        // don't repeat across y-axis (vertically)
-        if (y < 0 || y >= tileRange) {
-          return null;
-        }
-
-        // repeat across x-axis
-        if (x < 0 || x >= tileRange) {
-          x = (x % tileRange + tileRange) % tileRange;
-        }
-
-        return {x: x, y: y};
-      }
+        var routeCoordinates = [
+          {lat: 33.94335994657882, lng: -46.58203125},
+          {lat: 29.45873118535534, lng: -44.82421875},
+          {lat: 26.390213151413324, lng: -43.98964982845155},
+          {lat: 18.729501999072138, lng: -41.8359375}
+        ];
+        var route34 = new google.maps.Polyline({
+          path: routeCoordinates,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        route34.setMap(map);
+      } // initMap()
 
       function createMarker(latlng, name) {
         var marker = new google.maps.Marker({
           map: map,
           position: latlng,
           title: name
+        });
+        google.maps.event.addListener(marker, 'click', function() {
+          infoWindow.setContent(name);
+          infoWindow.open(map, marker);
         });
         markers.push(marker);
       }
@@ -137,6 +133,29 @@
       }
 
       function doNothing() {}
+
+      // Normalizes the coords that tiles repeat across the x axis (horizontally)
+      // like the standard Google map tiles.
+      function getNormalizedCoord(coord, zoom) {
+        var y = coord.y;
+        var x = coord.x;
+
+        // tile range in one direction range is dependent on zoom level
+        // 0 = 1 tile, 1 = 2 tiles, 2 = 4 tiles, 3 = 8 tiles, etc
+        var tileRange = 1 << zoom;
+
+        // don't repeat across y-axis (vertically)
+        if (y < 0 || y >= tileRange) {
+          return null;
+        }
+
+        // repeat across x-axis
+        if (x < 0 || x >= tileRange) {
+          x = (x % tileRange + tileRange) % tileRange;
+        }
+
+        return {x: x, y: y};
+      }
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZN7rNbVzB4bwutazKD0iwv5bQ6f59Avs&callback=initMap">
