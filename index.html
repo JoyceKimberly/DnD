@@ -83,17 +83,50 @@
           });
         });
 
+        var centerControlDiv = document.createElement('div');
+        var centerControl = new CenterControl(centerControlDiv, map);
+        centerControlDiv.index = 1;
+        map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(centerControlDiv);
+
         google.maps.event.addListener(map, 'click', function(event) {
           var latitude = event.latLng.lat();
           var longitude = event.latLng.lng();
-          console.log( '[' + longitude + ', ' + latitude + ']' );
+          map.controls[google.maps.ControlPosition.BOTTOM_CENTER].b[0].firstChild.firstChild.innerHTML = 
+          'Klik: [' + longitude + ', ' + latitude + ']' + 
+          '<br>Zoom: ' + map.getZoom() +
+          '<br>Center: ' + map.getCenter();
         });
       } // initMap()
 
       function computeDndDistance(distance) {
         return (distance/google.maps.geometry.spherical.computeLength(map.data.b.b[Object.keys(map.data.b.b)[0]].b.b))*110;
       }
-      
+
+      function CenterControl(controlDiv, map) {
+        // Set CSS for the control border.
+        var controlUI = document.createElement('div');
+        controlUI.style.backgroundColor = '#fff';
+        controlUI.style.border = '2px solid #fff';
+        controlUI.style.borderRadius = '3px';
+        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        //controlUI.style.cursor = 'pointer';
+        controlUI.style.marginBottom = '22px';
+        controlUI.style.textAlign = 'center';
+        controlUI.title = '';
+        controlDiv.appendChild(controlUI);
+
+        // Set CSS for the control interior.
+        var controlText = document.createElement('div');
+        controlText.style.color = 'rgb(25,25,25)';
+        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlText.style.fontSize = '13px';
+        controlText.style.lineHeight = '19px';
+        controlText.style.paddingLeft = '5px';
+        controlText.style.paddingRight = '5px';
+        controlText.innerHTML = '';
+        controlUI.appendChild(controlText);
+      }
+
       // Normalizes the coords that tiles repeat across the x axis (horizontally)
       // like the standard Google map tiles.
       function getNormalizedCoord(coord, zoom) {
