@@ -74,6 +74,15 @@
         var centerControl = new CenterControl(centerControlDiv, map);
         centerControlDiv.index = 1;
         map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(centerControlDiv);
+        
+        map.data.addListener('mouseover', function(event) {
+          map.data.revertStyle();
+          map.data.overrideStyle(event.feature, {strokeOpacity: 1});
+        });
+
+        map.data.addListener('mouseout', function(event) {
+          map.data.revertStyle();
+        });
 
         map.data.addListener('click', function(event) {
           if (event.feature.f.name) {
