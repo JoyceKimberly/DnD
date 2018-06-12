@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.669921875,
+          34.16181816123041
+        ]
+      },
+      "properties": {
+        "name": "Vasserbünde"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -41.923828125,
+          19.062117883514652
+        ]
+      },
+      "properties": {
+        "name": "Steinchencröe"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -64.06531856446782,
+          20.60730952819862
+        ]
+      },
+      "properties": {
+        "name": "Abbey"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -48.251953125,
+          54.67383096593114
+        ]
+      },
+      "properties": {
+        "name": "Coorhagen"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -38.32025937499998,
+          41.83682661612877
+        ]
+      },
+      "properties": {
+        "name": "Malek's Bastion"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -64.40351562500001,
+          37.67949071080526
+        ]
+      },
+      "properties": {
+        "name": "Nupraptor's Retreat"
+      }
+    }
+  ]
+}
