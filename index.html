@@ -94,8 +94,7 @@
           infoWindow.setPosition(event.latLng);
           infoWindow.open(map);
           map.data.toGeoJson(function(json) {
-            console.log(JSON.stringify(json, null, 2));
-            window.open("data:text/json," + encodeURIComponent(JSON.stringify(json)), "_blank");
+            window.open("data:text/json," + encodeURIComponent(JSON.stringify(json, null, 2)), "_blank");
           });
         });
 
