@@ -20,7 +20,6 @@
   </head>
   <body>
     <div id="map"></div>
-    <div id="geojson"></div>
     <script>
       var map;
       var infoWindow;
@@ -96,7 +95,7 @@
           infoWindow.open(map);
           map.data.toGeoJson(function(json) {
             console.log(JSON.stringify(json, null, 2));
-            document.getElementById('geojson').innerHTML = JSON.stringify(json);
+            window.open("data:text/json," + encodeURIComponent(json), "_blank");
           });
         });
 
