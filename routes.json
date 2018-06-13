@@ -23,8 +23,7 @@
             19.725342248057867
           ]
         ]
-      },
-      "properties": {}
+      }
     },
     {
       "type": "Feature",
@@ -68,8 +67,7 @@
             34.813803317113205
           ]
         ]
-      },
-      "properties": {}
+      }
     },
     {
       "type": "Feature",
@@ -193,8 +191,17 @@
             42.42345651793838
           ]
         ]
-      },
-      "properties": {}
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-70, 48],
+          [-60, 48]
+        ]
+      }
     }
   ]
 }
