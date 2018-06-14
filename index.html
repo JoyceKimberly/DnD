@@ -4,6 +4,8 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <title>DnD</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <style>
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -16,13 +18,36 @@
         margin: 0;
         padding: 0;
       }
+      #buttons i {
+        cursor: pointer; 
+        color: black;
+        opacity: 0.7;
+      }
+      #buttons i:hover {
+        opacity: 1;
+      }
+      #buttons i.active {
+        color: red;
+      }
     </style>
   </head>
   <body>
     <div id="map"></div>
+    <div id="buttons">
+      <i id="editButton" class="fas fa-edit fa-lg fa-fw"></i>
+      <i id="newButton" class="fas fa-plus-square fa-lg fa-fw"></i>
+      <i id="saveButton" class="far fa-save fa-lg fa-fw"></i>
+    </div>
     <script>
       var map;
       var infoWindow;
+      var firstCoords = [
+        {lat: 33.578014746144014, lng: -46.494140625},
+        {lat: 29.45873118535534, lng: -44.82421875},
+        {lat: 26.390213151413324, lng: -43.98964982845155},
+        {lat: 19.725342248057867, lng: -41.8359375}
+      ];
+      var calcDist = 110;
 
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
@@ -55,6 +80,7 @@
 
         map.mapTypes.set('DnD', DnDMapType);
         map.setMapTypeId('DnD');
+        map.data.add({geometry: new google.maps.Data.LineString(firstCoords)});
         map.data.loadGeoJson('routes.json');
         map.data.setStyle({
           strokeColor: '#FF0000',
@@ -70,10 +96,16 @@
           editable: false
         });
 
-        var centerControlDiv = document.createElement('div');
-        var centerControl = new CenterControl(centerControlDiv, map);
-        centerControlDiv.index = 1;
-        map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(centerControlDiv);
+        var editControlDiv = document.createElement('div');
+        var editControl = new CreateControl(editControlDiv, map);
+        editControlDiv.index = 1;
+        editControlDiv.firstChild.firstChild.appendChild(document.getElementById('buttons'));
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(editControlDiv);
+
+        var infoControlDiv = document.createElement('div');
+        var infoControl = new CreateControl(infoControlDiv, map);
+        infoControlDiv.index = 1;
+        map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(infoControlDiv);
         
         map.data.addListener('mouseover', function(event) {
           map.data.revertStyle();
@@ -93,15 +125,12 @@
           };
           infoWindow.setPosition(event.latLng);
           infoWindow.open(map);
-          map.data.toGeoJson(function(json) {
-            window.open("data:text/json," + encodeURIComponent(JSON.stringify(json, null, 2)), "_blank");
-          });
         });
 
         google.maps.event.addListener(map, 'click', function(event) {
           var latitude = event.latLng.lat();
           var longitude = event.latLng.lng();
-          map.controls[google.maps.ControlPosition.BOTTOM_CENTER].b[0].firstChild.firstChild.innerHTML = 
+          map.controls[google.maps.ControlPosition.BOTTOM_LEFT].b[0].firstChild.firstChild.innerHTML = 
           'Klik: [' + longitude + ', ' + latitude + ']' + 
           '<br>Zoom: ' + map.getZoom() +
           '<br>Center: ' + map.getCenter();
@@ -109,32 +138,88 @@
       } // initMap()
 
       function computeDndDistance(distance) {
-        return (distance/google.maps.geometry.spherical.computeLength(map.data.b.b[Object.keys(map.data.b.b)[0]].b.b))*110;
+        return (distance / google.maps.geometry.spherical.computeLength(map.data.b.b[Object.keys(map.data.b.b)[0]].b.b)) * calcDist;
       }
 
-      function CenterControl(controlDiv, map) {
+      function CreateControl(controlDiv, map) {
         // Set CSS for the control border.
         var controlUI = document.createElement('div');
+        controlUI.classList.add('gm-style');
         controlUI.style.backgroundColor = '#fff';
         controlUI.style.border = '2px solid #fff';
-        controlUI.style.borderRadius = '3px';
-        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI.style.borderRadius = '2px';
+        controlUI.style.boxShadow = 'rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px';
         //controlUI.style.cursor = 'pointer';
-        controlUI.style.marginBottom = '22px';
+        controlUI.style.margin = '10px 14px';
         controlUI.style.textAlign = 'center';
         controlUI.title = '';
         controlDiv.appendChild(controlUI);
 
         // Set CSS for the control interior.
         var controlText = document.createElement('div');
+        controlText.classList.add('gm-style-iw');
         controlText.style.color = 'rgb(25,25,25)';
-        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlText.style.fontFamily = 'Roboto, Arial, sans-serif';
+        controlText.style.fontWeight = '300';
         controlText.style.fontSize = '13px';
         controlText.style.lineHeight = '19px';
-        controlText.style.paddingLeft = '5px';
-        controlText.style.paddingRight = '5px';
+        controlText.style.padding = '5px 10px';
         controlText.innerHTML = '';
         controlUI.appendChild(controlText);
+
+        // Setup the click event listeners.
+        controlUI.addEventListener('click', function(event) {
+          //console.log( event.target );
+          switch(event.target.id) {
+            case "editButton":
+              if (map.data.getStyle().editable) {
+                map.data.setStyle({
+                  strokeColor: '#FF0000',
+                  strokeWeight: 3,
+                  strokeOpacity: 0.2,
+                  icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 10,
+                    strokeColor: '#FF0000',
+                    strokeWeight: 3
+                  },
+                  draggable: false, 
+                  editable: false
+                });
+                event.target.classList.remove('active');
+              } else {
+                map.data.setStyle({
+                  strokeColor: '#FF0000',
+                  strokeWeight: 3,
+                  strokeOpacity: 0.2,
+                  icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 10,
+                    strokeColor: '#FF0000',
+                    strokeWeight: 3
+                  },
+                  draggable: true, 
+                  editable: true
+                });
+                event.target.classList.add('active');
+              };
+              break;
+            case "newButton":
+              if (map.data.getDrawingMode() != null) {
+                map.data.setDrawingMode(null);
+                event.target.classList.remove('active');
+              } else {
+                map.data.setDrawingMode("LineString");
+                event.target.classList.add('active');
+              };
+              break;
+            case "saveButton":
+              map.data.toGeoJson(function(json) {
+                window.open("data:text/json," + encodeURIComponent(JSON.stringify(json, null, 2)), "_blank");
+              });
+              break;
+          };
+        });
       }
 
       // Normalizes the coords that tiles repeat across the x axis (horizontally)
@@ -159,6 +244,13 @@
 
         return {x: x, y: y};
       }
+      $(function() { // -----------------------------------------------------------------------
+        
+        $("#buttonsC").mouseover(function() {
+          console.log( $(this) );
+        });
+
+      }); // ----------------------------------------------------------------------------------
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZN7rNbVzB4bwutazKD0iwv5bQ6f59Avs&libraries=geometry&callback=initMap">
