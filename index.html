@@ -77,7 +77,7 @@
           },
           tileSize: new google.maps.Size(256, 256),
           maxZoom: 4,
-          minZoom: 0,
+          minZoom: 1,
           radius: 1738000,
           name: 'DnD'
         });
@@ -226,7 +226,15 @@
               break;
             case "saveButton":
               map.data.toGeoJson(function(json) {
-                window.open("data:text/json," + encodeURIComponent(JSON.stringify(json, null, 2)), "_blank");
+                //window.open("data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json, null, 2)), "_blank");
+
+                var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json, null, 2));
+                var downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href",     dataStr);
+                downloadAnchorNode.setAttribute("download", "routes.json");
+                document.body.appendChild(downloadAnchorNode); // required for firefox
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
               });
               break;
           };
