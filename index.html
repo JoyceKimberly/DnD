@@ -13,6 +13,7 @@
       }
       /* Optional: Makes the sample page fill the window. */
       html, body {
+        background-color: black;
         height: 100%;
         margin: 0;
         padding: 0;
@@ -56,6 +57,7 @@
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 37.23032838760387, lng: -48.427734375},
           zoom: 4,
+          gestureHandling: 'greedy',
           streetViewControl: false,
           mapTypeControl: false,
           mapTypeControlOptions: {
@@ -105,10 +107,10 @@
         editControlDiv.firstChild.firstChild.appendChild(document.getElementById('buttons'));
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(editControlDiv);
 
-        var infoControlDiv = document.createElement('div');
+/*        var infoControlDiv = document.createElement('div');
         var infoControl = new CreateControl(infoControlDiv, map);
         infoControlDiv.index = 1;
-        map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(infoControlDiv);
+        map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(infoControlDiv);*/
         
         map.data.addListener('mouseover', function(event) {
           map.data.revertStyle();
@@ -137,7 +139,7 @@
           infoWindow.open(map);
         });
 
-        google.maps.event.addListener(map, 'click', function(event) {
+/*        google.maps.event.addListener(map, 'click', function(event) {
           var latitude = event.latLng.lat();
           var longitude = event.latLng.lng();
           map.controls[google.maps.ControlPosition.BOTTOM_LEFT].b[0].firstChild.firstChild.innerHTML = 
@@ -145,6 +147,18 @@
           '<br>Zoom: ' + map.getZoom() +
           '<br>Center: ' + map.getCenter();
         });
+
+        google.maps.event.addListener(map, 'zoom_changed', function(event) {
+          map.controls[google.maps.ControlPosition.BOTTOM_LEFT].b[0].firstChild.firstChild.innerHTML = 
+          'Zoom: ' + map.getZoom() +
+          '<br>Center: ' + map.getCenter();
+        });
+
+        google.maps.event.addListener(map, 'drag', function(event) {
+          map.controls[google.maps.ControlPosition.BOTTOM_LEFT].b[0].firstChild.firstChild.innerHTML = 
+          'Zoom: ' + map.getZoom() +
+          '<br>Center: ' + map.getCenter();
+        });*/
       } // initMap()
 
       function computeDndDistance(distance) {
@@ -226,7 +240,6 @@
             case "saveButton":
               map.data.toGeoJson(function(json) {
                 //window.open("data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json, null, 2)), "_blank");
-
                 var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json, null, 2));
                 var downloadAnchorNode = document.createElement('a');
                 downloadAnchorNode.setAttribute("href",     dataStr);
